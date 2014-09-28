@@ -128,9 +128,9 @@ public class PlatformFile {
         addSomanetNode(somanetDeviceType);
 
         linksElement.appendChild(document.createTextNode("\n\n"));
-        linksElement.appendChild(document.createComment("##### DX Connection between SOMANET Node #" + (somanetNodes.size() - 2) + " and  #" + (somanetNodes.size() - 1) + " #####"));
+        linksElement.appendChild(document.createComment("##### DX Link between SOMANET Node #" + (somanetNodes.size() - 2) + "(" + somanetDXLink1.name() + ") and SOMANET Node #" + (somanetNodes.size() - 1) + "(" + somanetDXLink2.name() + ") #####"));
 
-        Element newLink = document.createElement("Link");
+                Element newLink = document.createElement("Link");
         newLink.setAttribute("Encoding", "2wire");
         newLink.setAttribute("Delays", "4,4");
         linksElement.appendChild(newLink);
@@ -196,12 +196,12 @@ public class PlatformFile {
         }
 
         // Create comment showing the END of the section belonging to SOMANET node added
-        destinationElement.appendChild(document.createComment("##### " + getFirstElementByTagName(sourceDocument, "Name").getTextContent() + " Node #" + (somanetNodes.size()-1) + " - " + destination + " END #####"));
-}
-    
-    public static Element getFirstElementByTagName(Node parentElement, String tagName){
-        if (parentElement instanceof Document){
-            parentElement= ((Document) parentElement).getDocumentElement();
+        destinationElement.appendChild(document.createComment("##### " + getFirstElementByTagName(sourceDocument, "Name").getTextContent() + " Node #" + (somanetNodes.size() - 1) + " - " + destination + " END #####"));
+    }
+
+    public static Element getFirstElementByTagName(Node parentElement, String tagName) {
+        if (parentElement instanceof Document) {
+            parentElement = ((Document) parentElement).getDocumentElement();
         }
         Element parentElement_help = (Element) parentElement;
         return (Element) parentElement_help.getElementsByTagName(tagName).item(0);
@@ -211,7 +211,7 @@ public class PlatformFile {
         ArrayList<Element> childElements = new ArrayList<>();
         for (int i = 0; i < parentElement.getChildNodes().getLength(); i++) {
 
-            if (parentElement.getChildNodes().item(i).getNodeType() == Node.ELEMENT_NODE){
+            if (parentElement.getChildNodes().item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element child = (Element) parentElement.getChildNodes().item(i);
 
                 if (child.getTagName().equals(tagName)) {
@@ -235,11 +235,11 @@ public class PlatformFile {
 
             if (deviceElement.getAttribute("Name").equals("bootFlash")) {
                 deviceElement.setAttribute("NodeId", Integer.toString(Integer.valueOf(deviceElement.getAttribute("NodeId")) + globalXMLNodeCounter));
-                deviceElement.setAttribute("Name", deviceElement.getAttribute("Name") + "_" + Integer.toString(somanetNodes.size() - 1));
+                setAttributeSuffix(deviceElement, "Name", somanetNodes.size() - 1);
 
                 for (int i = 0; i < deviceElement.getElementsByTagName("Attribute").getLength(); i++) {
                     Element portElement = (Element) deviceElement.getElementsByTagName("Attribute").item(i);
-                    portElement.setAttribute("Value", portElement.getAttribute("Value") + "_" + Integer.toString(somanetNodes.size()-1));
+                    setAttributeSuffix(portElement, "Value", somanetNodes.size() - 1);
                 }
             }
         }
@@ -248,10 +248,10 @@ public class PlatformFile {
             e.setAttribute("NodeId", Integer.toString(Integer.valueOf(e.getAttribute("NodeId")) + globalXMLNodeCounter));
         }
 
-        if(currentSomanetNode.getNodeElements() != null){
-        for (Element e : currentSomanetNode.getNodeElements()) {
-            e.setAttribute("Id", Integer.toString(Integer.valueOf(e.getAttribute("Id")) + globalXMLNodeCounter));
-        }
+        if (currentSomanetNode.getNodeElements() != null) {
+            for (Element e : currentSomanetNode.getNodeElements()) {
+                e.setAttribute("Id", Integer.toString(Integer.valueOf(e.getAttribute("Id")) + globalXMLNodeCounter));
+            }
         }
 
         int packageNumber = 0;
@@ -275,7 +275,7 @@ public class PlatformFile {
                 for (int k = 0; k < tileElement.getElementsByTagName("Port").getLength(); k++) {
                     Element portElement = (Element) tileElement.getElementsByTagName("Port").item(k);
                     if (portElement != null) {
-                        portElement.setAttribute("Name", portElement.getAttribute("Name") + "_" + Integer.toString(somanetNodes.size()-1));
+                        setAttributeSuffix(portElement, "Name", somanetNodes.size() - 1);
                     }
                 }
 
@@ -284,7 +284,7 @@ public class PlatformFile {
                 Element bootElement = getFirstElementByTagName(nodeElement, "Boot");
                 Element bootSourceElement = getFirstElementByTagName(bootElement, "Source");
                 if (bootSourceElement.getAttribute("Location").startsWith("SPI:bootFlash")) {
-                    bootSourceElement.setAttribute("Location", bootSourceElement.getAttribute("Location") + "_" + Integer.toString(somanetNodes.size()-1));
+                    setAttributeSuffix(bootSourceElement, "Location", somanetNodes.size() - 1);
                 }
 
             }
@@ -294,6 +294,14 @@ public class PlatformFile {
         globalXMLPackageCounter += packageNumber;
         getFirstElementByTagName(declarationsElement, "Declaration").setTextContent("tileref tile[" + globalXMLNodeCounter.toString() + "]");
 
+    }
+
+    public static void setAttributeSuffix(Element element, String attribute, String suffix) {
+        element.setAttribute("Name", element.getAttribute(attribute) + "_" + suffix);
+    }
+
+    public static void setAttributeSuffix(Element element, String attribute, Integer suffix) {
+        setAttributeSuffix(element, attribute, suffix.toString());
     }
 
     public void writeToFile(String fileName) {
