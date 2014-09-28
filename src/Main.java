@@ -33,7 +33,6 @@ public class Main {
                 break;
         }
 
-
         while (!exit) {
 
             // Add first node
@@ -43,7 +42,6 @@ public class Main {
                     "\t(2) SOMANET Core C21\n" +
                     "\t(0) Save & Exit\n:");
             nodeOption = in.nextInt();
-            System.out.print(nodeOption.toString());
             SomanetDeviceType nodeType;
             SomanetDXLink linkEndpoint1;
             SomanetDXLink linkEndpoint2;
@@ -65,12 +63,22 @@ public class Main {
                     platformFile.addSomanetNode(nodeType, linkEndpoint1, linkEndpoint2);
                     break;
                 case 0:
+                    System.out.print("Enter file name (default: generated.xn): ");
+                    in.nextLine();
+                    String fileName = in.nextLine();
+                    if (!fileName.isEmpty()) {
+                        if (!fileName.endsWith(".xn")){
+                            fileName += ".xn";
+                        }
+                    } else {
+                        fileName = "generated.xn";
+                    }
+                    platformFile.writeToFile("/home/afeher/workspace-java/SOMANET-platform-file-generator/export/" + fileName);
                     exit = true;
                     break;
             }
         }
 
-        platformFile.writeToFile("/home/afeher/workspace-java/SOMANET-platform-file-generator/resources/generated.xn");
 
     }
 
