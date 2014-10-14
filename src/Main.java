@@ -23,10 +23,10 @@ public class Main {
         firstNodeOption = in.nextInt();
         switch (firstNodeOption) {
             case 1:
-                platformFile.addSomanetNode(SomanetDeviceType.C22);
+                platformFile.addSomanetNode(SomanetCoreDeviceType.C22);
                 break;
             case 2:
-                platformFile.addSomanetNode(SomanetDeviceType.C21);
+                platformFile.addSomanetNode(SomanetCoreDeviceType.C21);
                 break;
             case 0:
                 exit = true;
@@ -42,20 +42,20 @@ public class Main {
                     "\t(2) SOMANET Core C21\n" +
                     "\t(0) Save & Exit\n:");
             nodeOption = in.nextInt();
-            SomanetDeviceType nodeType;
-            SomanetDXLink linkEndpoint1;
-            SomanetDXLink linkEndpoint2;
+            SomanetCoreDeviceType nodeType;
+            SomanetNodeDXLinkEndpoint linkEndpoint1;
+            SomanetNodeDXLinkEndpoint linkEndpoint2;
             switch (nodeOption) {
                 case 1:
-                    nodeType = SomanetDeviceType.C22;
-                    System.out.print("Choose last node's DX port");
+                    nodeType = SomanetCoreDeviceType.C22;
+                    System.out.print("Choose previous node's DX port");
                     linkEndpoint1 = readDXPortOption(in);
                     System.out.print("Choose current node's DX port");
                     linkEndpoint2 = readDXPortOption(in);
                     platformFile.addSomanetNode(nodeType, linkEndpoint1, linkEndpoint2);
                     break;
                 case 2:
-                    nodeType = SomanetDeviceType.C21;
+                    nodeType = SomanetCoreDeviceType.C21;
                     System.out.print("Choose last node's DX port");
                     linkEndpoint1 = readDXPortOption(in);
                     System.out.print("Choose current node's DX port");
@@ -82,7 +82,7 @@ public class Main {
 
     }
 
-    public static SomanetDXLink readDXPortOption(Scanner in) {
+    public static SomanetNodeDXLinkEndpoint readDXPortOption(Scanner in) {
         Integer portOption;
         System.out.print("\n\t(1) COM_DX_A\n" +
                 "\t(2) COM_DX_B\n" +
@@ -90,19 +90,19 @@ public class Main {
                 "\t(4) IFM_DX_B (Available on: IFM Drive DC100, IFM Drive DC300)\n" +
                 ":");
         portOption = in.nextInt();
-        SomanetDXLink port = null;
+        SomanetNodeDXLinkEndpoint port = null;
         switch (portOption) {
             case 1:
-                port = SomanetDXLink.COM_A;
+                port = SomanetNodeDXLinkEndpoint.COM_A;
                 break;
             case 2:
-                port = SomanetDXLink.COM_B;
+                port = SomanetNodeDXLinkEndpoint.COM_B;
                 break;
             case 3:
-                port = SomanetDXLink.IFM_A;
+                port = SomanetNodeDXLinkEndpoint.IFM_A;
                 break;
             case 4:
-                port = SomanetDXLink.IFM_B;
+                port = SomanetNodeDXLinkEndpoint.IFM_B;
                 break;
         }
         return port;
